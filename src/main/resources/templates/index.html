@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thymeleaf Interactive Tutorial</title>
+    <link rel="stylesheet" href="../../css/main-static.css" th:href="@{/css/main.css}" />
+    <meta charset="utf-8" />
+</head>
+<body>
+<div th:switch="${breeds}">
+    <h2 th:case="null">No dogs yet!</h2>
+    <div th:case="*">
+        <h2>Dogs</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Breed</th>
+                <th>Sub Breed</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="breed : ${breeds}">
+                <td th:text="${breed.name}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p><a href="/create">Add a new dog breed</a></p>
+</div>
+</body>
+</html>
