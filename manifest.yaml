@@ -1,0 +1,9 @@
+---
+applications:
+  - name: dogs
+    memory: 768M
+    instances: 1
+    random-route: true
+    buildpacks:
+      - java_buildpack
+    path: target/dogs-0.0.1-SNAPSHOT.jar
