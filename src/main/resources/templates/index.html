@@ -23,6 +23,7 @@
             <tbody>
             <tr th:each="breed : ${breeds}">
                 <td th:text="${breed.name}"></td>
+                <td th:text="${breed.subBreeds}"></td>
             </tr>
             </tbody>
         </table>
