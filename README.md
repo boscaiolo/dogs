@@ -9,4 +9,4 @@ https://github.com/boscaiolo/dogs
 
 ## Deployment
 
-https://dogs-empathic-meerkat.cfapps.io/
+https://dogs.cfapps.io

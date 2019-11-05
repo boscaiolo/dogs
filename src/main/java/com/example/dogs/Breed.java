@@ -1,20 +1,26 @@
 package com.example.dogs;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "breeds")
 public class Breed {
 
         @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+
         @NotBlank(message = "Name is mandatory")
+        @Size(max = 100)
         private String name;
 
         @ElementCollection
+        @CollectionTable(name = "sub_breeds", joinColumns = @JoinColumn(name = "breed_id"))
+        @Column(name = "sub_breed")
         private Set<String> subBreeds = new HashSet<>();
 
         public Set<String> getSubBreeds() {
@@ -23,14 +29,6 @@ public class Breed {
 
         public void setSubBreeds(Set<String> subBreeds) {
                 this.subBreeds = subBreeds;
-        }
-
-        public void setSubBreed(String subBreed) {
-                this.subBreeds.add(subBreed.toUpperCase());
-        }
-
-        public String getSubBreed() {
-                return this.subBreeds.toString();
         }
 
         public String getName() {
