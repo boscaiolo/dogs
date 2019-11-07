@@ -4,9 +4,8 @@
     <label for="name">Name</label>
     <input type="text" th:field="*{name}" id="name" placeholder="Name">
     <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
-    <label for="subBreed">Sub Breed</label>
-    <input type="text" th:field="*{subBreed}" id="subBreed" placeholder="Sub Breed">
-    <span th:if="${#fields.hasErrors('subBreed')}" th:errors="*{subBreed}"></span>
-
+    <label for="subBreeds">Sub Breed</label>
+    <textarea type="text" class="form-control" th:field="*{subBreeds}" id="subBreeds" placeholder="Sub Breeds"/>
+    <span th:if="${#fields.hasErrors('subBreeds')}" th:errors="*{subBreeds}"></span>
     <input type="submit" value="Add Breed">
 </form>
