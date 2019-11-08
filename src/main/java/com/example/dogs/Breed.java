@@ -16,6 +16,7 @@ public class Breed {
 
         @NotBlank(message = "Name is mandatory")
         @Size(max = 100)
+        @Column(unique = true)
         private String name;
 
         @ElementCollection
@@ -37,5 +38,13 @@ public class Breed {
 
         public void setName(String name) {
                 this.name = name.toUpperCase();
+        }
+
+        public Long getId() {
+                return id;
+        }
+
+        public void setId(Long id) {
+                this.id = id;
         }
 }
