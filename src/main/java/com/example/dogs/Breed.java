@@ -5,6 +5,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "breeds")
@@ -29,7 +30,8 @@ public class Breed {
         }
 
         public void setSubBreeds(Set<String> subBreeds) {
-                this.subBreeds = subBreeds;
+                this.subBreeds = subBreeds.stream()
+                        .map(s -> s.toLowerCase()).collect(Collectors.toSet());
         }
 
         public String getName() {
