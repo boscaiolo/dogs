@@ -1,6 +1,9 @@
 package com.example.dogs;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -8,7 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 @Controller
 public class DogsController {
@@ -19,6 +26,35 @@ public class DogsController {
     @Autowired
     public DogsController(BreedRepository breedRepository) {
         this.breedRepository = breedRepository;
+    }
+
+    @PostConstruct
+    public void init(){
+        ObjectMapper jsonMapper = new ObjectMapper();
+
+        InputStream jsonFile = null;
+        List<Breed> breeds = null;
+        try {
+            jsonFile = new ClassPathResource("dogs.json").getInputStream();
+            JsonNode jsonNode = jsonMapper.readTree(jsonFile);
+            Iterator<String> fieldNames = jsonNode.fieldNames();
+            while(fieldNames.hasNext()) {
+                String fieldName = fieldNames.next();
+                JsonNode field = jsonNode.get(fieldName);
+
+                Breed breed = new Breed();
+                breed.setName(fieldName);
+
+                Set<String> subBreeds = new HashSet<>();
+                for(JsonNode subBreed : field) {
+                    subBreeds.add(subBreed.asText());
+                }
+                breed.setSubBreeds(subBreeds);
+                breedRepository.save(breed);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @GetMapping("/create")
