@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,7 +16,10 @@ import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 @Controller
 public class DogsController {
@@ -50,7 +54,11 @@ public class DogsController {
                     subBreeds.add(subBreed.asText());
                 }
                 breed.setSubBreeds(subBreeds);
-                breedRepository.save(breed);
+                try {
+                    breedRepository.save(breed);
+                }catch (DataIntegrityViolationException e){
+                    e.printStackTrace();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -91,8 +99,13 @@ public class DogsController {
         if (result.hasErrors()) {
             return "add-breed";
         }
+        try {
+            breedRepository.save(breed);
+        } catch (DataIntegrityViolationException e){
+            model.addAttribute("error", "Breed: '" + breed.getName() + "' already exists.");
+            return "add-breed";
+        }
 
-        breedRepository.save(breed);
         model.addAttribute("breeds", breedRepository.findAll());
         return "index";
     }
