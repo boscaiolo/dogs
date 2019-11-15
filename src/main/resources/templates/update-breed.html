@@ -4,6 +4,7 @@
     <label for="name">Name</label>
     <input type="text" th:field="*{name}" id="name" placeholder="Name">
     <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+    <span th:text="${error}"></span>    
     <label for="subBreeds">Sub Breed</label>
     <textarea type="text" class="form-control" th:field="*{subBreeds}" id="subBreeds" placeholder="Sub Breeds"/>
     <span th:if="${#fields.hasErrors('subBreeds')}" th:errors="*{subBreeds}"></span>

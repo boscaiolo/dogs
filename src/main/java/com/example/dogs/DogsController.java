@@ -118,7 +118,12 @@ public class DogsController {
             return "update-breed";
         }
 
-        breedRepository.save(breed);
+        try {
+            breedRepository.save(breed);
+        } catch (DataIntegrityViolationException e){
+            model.addAttribute("error", "Breed: '" + breed.getName() + "' already exists.");
+            return "update-breed";
+        }
         model.addAttribute("breeds", breedRepository.findAll());
         return "index";
     }
