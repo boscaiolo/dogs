@@ -16,10 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 public class DogsController {
@@ -33,7 +30,7 @@ public class DogsController {
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
         ObjectMapper jsonMapper = new ObjectMapper();
 
         InputStream jsonFile = null;
@@ -42,7 +39,7 @@ public class DogsController {
             jsonFile = new ClassPathResource("dogs.json").getInputStream();
             JsonNode jsonNode = jsonMapper.readTree(jsonFile);
             Iterator<String> fieldNames = jsonNode.fieldNames();
-            while(fieldNames.hasNext()) {
+            while (fieldNames.hasNext()) {
                 String fieldName = fieldNames.next();
                 JsonNode field = jsonNode.get(fieldName);
 
@@ -50,13 +47,13 @@ public class DogsController {
                 breed.setName(fieldName);
 
                 Set<String> subBreeds = new HashSet<>();
-                for(JsonNode subBreed : field) {
+                for (JsonNode subBreed : field) {
                     subBreeds.add(subBreed.asText());
                 }
                 breed.setSubBreeds(subBreeds);
                 try {
                     breedRepository.save(breed);
-                }catch (DataIntegrityViolationException e){
+                } catch (DataIntegrityViolationException e) {
                     e.printStackTrace();
                 }
             }
@@ -72,18 +69,22 @@ public class DogsController {
 
     @GetMapping("/edit/{id}")
     public String showUpdateForm(@PathVariable("id") long id, Model model) {
-        Breed breed = breedRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid breed Id:" + id));
+        Optional<Breed> breed = breedRepository.findById(id);
+        if (!breed.isPresent()) {
+            model.addAttribute("breeds", breedRepository.findAll());
+            return "index";
+        }
 
-        model.addAttribute("breed", breed);
+        model.addAttribute("breed", breed.get());
         return "update-breed";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteBreed(@PathVariable("id") long id, Model model) {
-        Breed breed = breedRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid breed Id:" + id));
-        breedRepository.delete(breed);
+        Optional<Breed> breed = breedRepository.findById(id);
+        if (breed.isPresent()) {
+            breedRepository.delete(breed.get());
+        }
         model.addAttribute("breeds", breedRepository.findAll());
         return "index";
     }
@@ -101,7 +102,7 @@ public class DogsController {
         }
         try {
             breedRepository.save(breed);
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             model.addAttribute("error", "Breed: '" + breed.getName() + "' already exists.");
             return "add-breed";
         }
@@ -112,7 +113,7 @@ public class DogsController {
 
     @PostMapping("/update/{id}")
     public String updateBreed(@PathVariable("id") long id, @Valid Breed breed,
-                             BindingResult result, Model model) {
+                              BindingResult result, Model model) {
         if (result.hasErrors()) {
             breed.setId(id);
             return "update-breed";
@@ -120,7 +121,7 @@ public class DogsController {
 
         try {
             breedRepository.save(breed);
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             model.addAttribute("error", "Breed: '" + breed.getName() + "' already exists.");
             return "update-breed";
         }

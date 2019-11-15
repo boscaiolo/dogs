@@ -1,12 +1,21 @@
 spring:
   jpa:
     generate-ddl: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 124846322959-van9vubk1i2602o0ph5680ttt90pdjns.apps.googleusercontent.com
+            clientSecret: XrxdIbHcv7icD2PttYyBI916
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+
+
 
 ---
 spring:
