@@ -1,14 +1,6 @@
 spring:
   jpa:
     generate-ddl: true
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: 
-            clientSecret:
-
 
 management:
   endpoints:
